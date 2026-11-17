@@ -1,0 +1,79 @@
+
+row_count = int(input("Количество строк: "))
+column_count = int(input("Количество столбцов: "))
+
+matrix = []
+
+for row_number in range(row_count):
+    row = list(map(int, input().split()))
+    matrix.append(row)
+
+mean_matrix = []
+zero_matrix = []
+
+for row in matrix:
+    mean_matrix.append([])
+    zero_matrix.append(row.copy())
+
+for row_number in range(row_count):
+    for column_number in range(column_count):
+        number = matrix[row_number][column_number]
+
+        neighbors = []
+        positions = []
+
+        if row_number > 0:
+            neighbors.append(matrix[row_number - 1][column_number])
+            positions.append((row_number - 1, column_number))
+
+        if row_number < row_count - 1:
+            neighbors.append(matrix[row_number + 1][column_number])
+            positions.append((row_number + 1, column_number))
+
+        if column_number > 0:
+            neighbors.append(matrix[row_number][column_number - 1])
+            positions.append((row_number, column_number - 1))
+
+        if column_number < column_count - 1:
+            neighbors.append(matrix[row_number][column_number + 1])
+            positions.append((row_number, column_number + 1))
+
+        if number > sum(neighbors):
+            print("10.1:", row_number, column_number, number)
+
+        if len(neighbors) == 4:
+            top = matrix[row_number - 1][column_number]
+            bottom = matrix[row_number + 1][column_number]
+            left = matrix[row_number][column_number - 1]
+            right = matrix[row_number][column_number + 1]
+
+            if ((number > top and number > bottom and
+                 number < left and number < right) or
+                (number > left and number > right and
+                 number < top and number < bottom)):
+                print("10.2:", row_number, column_number, number)
+
+        product = 1
+
+        for neighbor in neighbors:
+            product *= abs(neighbor)
+
+        if len(neighbors) > 0:
+            mean = product ** (1 / len(neighbors))
+        else:
+            mean = number
+
+        mean_matrix[row_number].append(mean)
+
+        if len(neighbors) > 0:
+            if number > max(neighbors):
+                for neighbor_row, neighbor_column in positions:
+                    zero_matrix[neighbor_row][neighbor_column] = 0
+
+print("10.3:")
+for row in mean_matrix:
+    print(*row)
+
+print("10.4:")
+for row in zero_matrix:
+    print(*row)
